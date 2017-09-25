@@ -271,7 +271,14 @@ module.exports = function container (get, set, clear) {
                 }
 
                 var testResult = parseSimulation(path.resolve(__dirname, '..', tempModelFile) + '-simTestResult.html')
+                if (testResult.errorRate > 20 || testResult.endBalance < 3) {
+                  console.log(selector + ' - bad trading results, try again! vsBuyHold: ' + testResult.vsBuyHold + ' and errorRate ' + testResult.errorRate + ' and endBalance ' + testResult.endBalance + '%')
+                  fs.unlink(path.resolve(__dirname, '..', tempModelFile));
+                  fs.unlink(path.resolve(__dirname, '..', tempModelFile) + '-simTrainingResult.html')
+                  fs.unlink(path.resolve(__dirname, '..', tempModelFile) + '-simTestResult.html')
 
+                  process.exit(0)
+                }
                 var finalModelFile = writeFinalModel(strategy, so.end_training, trainingResult, testResult)
                 fs.rename(path.resolve(__dirname, '..', tempModelFile) + '-simTrainingResult.html', path.resolve(__dirname, '..', finalModelFile) + '-simTrainingResult.html')
                 fs.rename(path.resolve(__dirname, '..', tempModelFile) + '-simTestResult.html', path.resolve(__dirname, '..', finalModelFile) + '-simTestResult.html')
