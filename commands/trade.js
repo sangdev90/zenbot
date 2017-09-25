@@ -143,10 +143,13 @@ module.exports = function container (get, set, clear) {
           s.balance.currency = n(s.balance.currency).add(n(s.period.close).multiply(s.balance.asset)).format('0.00000000')
           s.balance.asset = 0
           s.lookback.unshift(s.period)
+          so.max_asset = c.max_asset[s.currency] ? c.max_asset[s.currency] : n(0)
+
           var profit = s.start_capital ? n(s.balance.currency).subtract(s.start_capital).divide(s.start_capital) : n(0)
+          var buy_hold = s.start_price ? n(s.period.close).multiply(n(so.max_asset).divide(s.start_price)).add(s.balance.currency) : n(s.balance.currency)
+          var buy_hold_profit = so.max_asset ? n(buy_hold).subtract(so.max_asset).divide(so.max_asset) : n(0)
+
           output_lines.push('last balance: ' + n(s.balance.currency).format('0.00000000').yellow + ' (' + profit.format('0.00%') + ')')
-          var buy_hold = s.start_price ? n(s.period.close).multiply(n(s.start_capital).divide(s.start_price)) : n(s.balance.currency)
-          var buy_hold_profit = s.start_capital ? n(buy_hold).subtract(s.start_capital).divide(s.start_capital) : n(0)
           output_lines.push('buy hold: ' + buy_hold.format('0.00000000').yellow + ' (' + n(buy_hold_profit).format('0.00%') + ')')
           output_lines.push('vs. buy hold: ' + n(s.balance.currency).subtract(buy_hold).divide(buy_hold).format('0.00%').yellow)
           output_lines.push(s.my_trades.length + ' trades over ' + s.day_count + ' days (avg ' + n(s.my_trades.length / s.day_count).format('0.00') + ' trades/day)')
