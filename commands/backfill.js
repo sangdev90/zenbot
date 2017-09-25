@@ -12,8 +12,11 @@ module.exports = function container (get, set, clear) {
       .option('-d, --days <days>', 'number of days to acquire (default: ' + c.days + ')', Number, c.days)
       .action(function (selector, cmd) {
         selector = get('lib.normalize-selector')(selector || c.selector)
-        var exchange_id = selector.split('.')[0]
+        var exchange_id = 'poloniex'
         var product_id = selector.split('.')[1]
+        if (product_id === 'NEO-BTC' || product_id === 'OMG-BTC') {
+          exchange_id = 'bitfinex'
+        }
         var exchange = get('exchanges.' + exchange_id)
         if (!exchange) {
           console.error('cannot backfill ' + selector + ': exchange not implemented')
