@@ -15,6 +15,12 @@ c.selector = 'gdax.BTC-USD'
 // name of default trade strategy
 c.strategy = 'trend_ema'
 
+// Total of the amoung of a single asset to hold in Bitcoins
+c.max_asset = {}
+c.max_asset.BTC = 0.05
+c.max_asset.ETH = 1
+c.max_asset.USDT = 500
+
 // Exchange API keys:
 
 // to enable GDAX trading, enter your API credentials:
