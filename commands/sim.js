@@ -42,6 +42,12 @@ module.exports = function container (get, set, clear) {
         var s = {options: minimist(process.argv)}
         var so = s.options
         delete so._
+        if (cmd.conf) {
+          var overrides = require(path.resolve(process.cwd(), cmd.conf))
+          Object.keys(overrides).forEach(function (k) {
+            so[k] = overrides[k]
+          })
+        }
         Object.keys(c).forEach(function (k) {
           if (typeof cmd[k] !== 'undefined') {
             so[k] = cmd[k]
@@ -68,12 +74,6 @@ module.exports = function container (get, set, clear) {
         so.verbose = !!cmd.verbose
         so.selector = get('lib.normalize-selector')(selector || c.selector)
         so.mode = 'sim'
-        if (cmd.conf) {
-          var overrides = require(path.resolve(process.cwd(), cmd.conf))
-          Object.keys(overrides).forEach(function (k) {
-            so[k] = overrides[k]
-          })
-        }
         var engine = get('lib.engine')(s)
         if (!so.min_periods) so.min_periods = 1
         var cursor, reversing, reverse_point
